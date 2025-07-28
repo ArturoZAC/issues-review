@@ -1,6 +1,7 @@
 import { IssueItem } from './IssueItem';
+import { GitHubIssue } from '../interfaces/issue.interface';
 
-export const IssueList = () => {
+export const IssueList = ({ issues } : { issues : GitHubIssue[]}) => {
   return (
     <>
       {/* Botones de All, Open, Closed */}
@@ -12,8 +13,8 @@ export const IssueList = () => {
 
       {/* Lista de issues */}
       <div className="mt-4 animate-fadeIn">
-        {[1, 2, 3].map((issue) => (
-          <IssueItem key={issue} />
+        {issues.map((issue) => (
+          <IssueItem key={issue.id} issue={issue}/>
         ))}
       </div>
     </>
