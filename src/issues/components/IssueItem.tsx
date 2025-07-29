@@ -24,46 +24,46 @@ export const IssueItem = ({ issue }: { issue: GitHubIssue }) => {
   }
 
   const presetData = () => {
-    queryClient.setQueryData(['issues', issue.number], issue , { updatedAt: Date.now() + 1000 * 60});
+    queryClient.setQueryData(['issues', issue.number], issue, { updatedAt: Date.now() + 1000 * 60 });
   }
 
   return (
-    <div 
-      onMouseEnter={ prefecthData }
+    <div
+      onMouseEnter={prefecthData}
       // onMouseEnter={ presetData }
-      className="flex items-center px-2 py-3 mb-5 border rounded-md bg-slate-900 hover:bg-slate-800"
+      className="flex items-center px-2 py-3 mb-2.5 border rounded-md bg-slate-900 hover:bg-slate-800"
     >
 
       {
         (issue.state === State.Close)
-          ? <FiCheckCircle size={30} color="green" className="min-w-10"/>
+          ? <FiCheckCircle size={30} color="green" className="min-w-10" />
           : <FiInfo size={30} color="red" className="min-w-10" />
       }
 
       <div className="flex flex-col flex-grow px-2">
         <a
-          onClick={() => navigate(`/issues/issue/${ issue.number }`)}
+          onClick={() => navigate(`/issues/issue/${issue.number}`)}
           className="hover:underline"
         >
-          { issue.title }
+          {issue.title}
         </a>
         <span className="text-gray-500">
-          #${ issue.number } opened { timeSince(issue.created_at) } ago by {' '}
-          <span className="font-bold">{ issue.user.login }</span>
+          #${issue.number} opened {timeSince(issue.created_at)} ago by {' '}
+          <span className="font-bold">{issue.user.login}</span>
         </span>
 
         <div className='flex flex-wrap'>
           {
-            issue.labels.map( label => (
+            issue.labels.map(label => (
               <span
                 key={label.id}
                 className={`p-1 mr-2 text-xs rounded-md`}
                 style={{
-                  border: `1px solid #${ label.color }`,
+                  border: `1px solid #${label.color}`,
                   color: `#${label.color}`,
                 }}
               >
-                { label.name }
+                {label.name}
               </span>
             ))
           }

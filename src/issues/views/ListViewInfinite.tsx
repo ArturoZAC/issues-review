@@ -2,20 +2,23 @@ import { useState } from 'react';
 import { LoadingSpinner } from '../../shared';
 import { IssueList } from '../components/IssueList';
 import { LabelPicker } from '../components/LabelPicker';
-import { useIssues } from '../hooks';
 import { State } from '../interfaces/issue.interface';
+import { useIssuesInfinite } from '../hooks/useIssuesInfinite';
 
-export const ListView = () => {
+export const ListViewInfinite = () => {
 
   const [state, setState] = useState<State>(State.All);
   const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
 
-  const { issueQuery, page, prevPage, nextPage } = useIssues({
+  const { issueQuery } = useIssuesInfinite({
     state,
     selectedLabels
   });
 
-  const issues = issueQuery.data ?? [];
+  const issues = issueQuery.data?.pages.flat() ?? [];
+  // const ids = issues.map(i => i.id);
+  // const duplicates = ids.filter((id, i) => ids.indexOf(id) !== i);
+  // console.log("Duplicated IDs:", duplicates);
 
   const onLabelSelected = (label: string) => {
     (selectedLabels.includes(label))
@@ -30,28 +33,21 @@ export const ListView = () => {
           (issueQuery.isLoading)
             ? <LoadingSpinner />
             : (
-              <>
+              <div className='flex flex-col justify-center'>
                 <IssueList issues={issues} onStateChange={setState} state={state} />
 
-                <div className="flex items-center justify-center gap-4 mt-6">
-                  <button
-                    className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 transition-colors disabled:bg-gray-700 disabled:cursor-not-allowed"
-                    disabled={page === 1}
-                    onClick={prevPage}
-                  >
-                    Anterior
-                  </button>
-                  <span className="text-lg font-semibold text-gray-700 bg-gray-100 px-2 py-1 rounded-lg shadow">
-                    {page}
-                  </span>
-                  <button
-                    className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
-                    onClick={nextPage}
-                  >
-                    Siguiente
-                  </button>
-                </div>
-              </>
+                <button
+                  onClick={() => issueQuery.fetchNextPage()}
+                  disabled={issueQuery.isFetchingNextPage}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-500 transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed"
+                >
+                  {
+                    issueQuery.isFetchingNextPage
+                      ? 'Cargando más...'
+                      : 'Cargar más...'
+                  }
+                </button>
+              </div>
             )
         }
       </div>
