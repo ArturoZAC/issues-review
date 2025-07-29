@@ -28,8 +28,8 @@ export const IssueItem = ({ issue }: { issue: GitHubIssue }) => {
 
   return (
     <div 
-      // onMouseEnter={ prefecthData }
-      onMouseEnter={ presetData }
+      onMouseEnter={ prefecthData }
+      // onMouseEnter={ presetData }
       className="flex items-center px-2 py-3 mb-5 border rounded-md bg-slate-900 hover:bg-slate-800"
     >
 
@@ -50,6 +50,25 @@ export const IssueItem = ({ issue }: { issue: GitHubIssue }) => {
           #${ issue.number } opened 2 days ago by {' '}
           <span className="font-bold">{ issue.user.login }</span>
         </span>
+
+        <div className='flex flex-wrap'>
+          {
+            issue.labels.map( label => (
+              <span
+                key={label.id}
+                className={`p-1 mr-2 text-xs rounded-md`}
+                style={{
+                  border: `1px solid #${ label.color }`,
+                  color: `#${label.color}`,
+                }}
+              >
+                { label.name }
+              </span>
+            ))
+          }
+        </div>
+
+
       </div>
 
       <img

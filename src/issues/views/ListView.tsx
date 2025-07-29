@@ -1,13 +1,27 @@
+import { useState } from 'react';
 import { LoadingSpinner } from '../../shared';
 import { IssueList } from '../components/IssueList';
 import { LabelPicker } from '../components/LabelPicker';
 import { useIssues } from '../hooks';
+import { State } from '../interfaces/issue.interface';
 
 export const ListView = () => {
 
-  const { issueQuery } = useIssues();
+  const [state, setState] = useState<State>( State.All );
+  const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
+  
+  const { issueQuery } = useIssues({
+    state,
+    selectedLabels
+  });
 
   const issues = issueQuery.data ?? [];
+
+  const onLabelSelected = ( label: string ) => {
+    (selectedLabels.includes(label))
+      ? setSelectedLabels(selectedLabels.filter( selectedLabel => selectedLabel !== label))
+      : setSelectedLabels([...selectedLabels, label])
+  }
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 mt-5">
@@ -15,12 +29,15 @@ export const ListView = () => {
         {
           ( issueQuery.isLoading )
             ? <LoadingSpinner />
-            : <IssueList issues={issues}/>
+            : <IssueList issues={issues} onStateChange={ setState } state={ state }/>
         }
       </div>
 
       <div className="col-span-1 px-2">
-        <LabelPicker />
+        <LabelPicker 
+          onLabelSelected={onLabelSelected}
+          selectedLabels={selectedLabels}
+        />
       </div>
     </div>
   );
